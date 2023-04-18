@@ -1,5 +1,7 @@
-﻿namespace GithubApp;
-    
+﻿using GithubApp.Services;
+
+namespace GithubApp;
+
 public class Startup
 {
     public Startup(IConfiguration configuration)
@@ -12,6 +14,7 @@ public class Startup
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddScoped<IGithubAppService, GithubAppService>();
         services.AddControllers();
     }
 
@@ -39,4 +42,3 @@ public class Startup
         });
     }
 }
-

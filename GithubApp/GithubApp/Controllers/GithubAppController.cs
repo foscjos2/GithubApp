@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GithubApp.Services;
+using Microsoft.AspNetCore.Mvc;
+using Octokit.Webhooks.Events;
 
 namespace GithubApp.Controllers;
 
@@ -6,11 +8,16 @@ namespace GithubApp.Controllers;
 [Route("api/webhook")]
 public class GithubAppController
 {
-    public GithubAppController() { }
+    private readonly IGithubAppService githubAppService;
 
-    [HttpGet]
-    public string Get()
+    public GithubAppController(IGithubAppService githubAppService)
     {
-        return "Hello world";
+        this.githubAppService = githubAppService;
+    }
+
+    [HttpPost]
+    public async Task<string> Post(PushEvent pushEvent)
+    {
+        return await this.githubAppService.GithubWebhookEventAsync(pushEvent);
     }
 }
