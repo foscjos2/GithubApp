@@ -19,7 +19,7 @@ public class GithubAppService : IGithubAppService
 
         var appClient = new GitHubClient(new ProductHeaderValue("MyApp")) { Credentials = creds };
 
-        await this.CreateInstallationAccessTokenAsync(appClient, installationId);
+        var token = await this.CreateInstallationAccessTokenAsync(appClient, installationId);
 
         return "Hello World";
     }
