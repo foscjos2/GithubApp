@@ -11,12 +11,14 @@ public class GithubAppService : IGithubAppService
     public async Task<string> GithubWebhookEventAsync(PushEvent pushEvent)
     {
         // determine which repo called us, generate an installation access token
+        // Please note that steps 2 and 3 should be done in our workflow so we can ensure that the token does not expire if there is a long build queue
         // (1) Grab the installationId
         long installationId = this.GetInstallationId(pushEvent);
 
         // (2) Generate our JWT
         Credentials creds = this.GenerateJwtCreds();
 
+        // (3) Create a client with our JWT and use that to grab the installation token
         var appClient = new GitHubClient(new ProductHeaderValue("MyApp")) { Credentials = creds };
 
         var token = await this.CreateInstallationAccessTokenAsync(appClient, installationId);
@@ -53,8 +55,8 @@ public class GithubAppService : IGithubAppService
             ),
             new GitHubJwt.GitHubJwtFactoryOptions
             {
-                AppIntegrationId = 320466,
-                ExpirationSeconds = 500
+                AppIntegrationId = 320466, // app id that github assigns us
+                ExpirationSeconds = 500 // this is fine for the JWT
             }
         );
 
